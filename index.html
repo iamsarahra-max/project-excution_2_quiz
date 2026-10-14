@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>건설 프로젝트 실무 영어 학습 App</title>
+  <style>
+    /* Mobile & Touch UX Optimization */
+    html, body {
+      overscroll-behavior-y: contain; /* Pull-to-refresh 방지 */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    header {
+      background-color: #1e3a8a;
+      color: #fff;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .btn-reset-top {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-reset-top:active {
+      background: #dc2626;
+    }
+    nav {
+      display: flex;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    nav button {
+      flex: 1;
+      padding: 12px 14px;
+      border: none;
+      background: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+    nav button.active {
+      color: #1e3a8a;
+      border-bottom-color: #1e3a8a;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+      padding-bottom: 80px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #1e293b;
+      font-size: 1.05rem;
+    }
+    .btn-audio {
+      background-color: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-audio:active {
+      background-color: #dbeafe;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .quiz-option {
+      padding: 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      background: #f8fafc;
+      font-size: 0.93rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .quiz-option.correct {
+      background-color: #dcfce7;
+      border-color: #22c55e;
+      color: #15803d;
+      font-weight: 600;
+    }
+    .quiz-option.incorrect-temp {
+      background-color: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #b91c1c !important;
+      animation: shake 0.3s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    .matching-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .match-btn {
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 0.9rem;
+      text-align: center;
+      cursor: pointer;
+    }
+    .match-btn.selected {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+      color: #2563eb;
+      font-weight: bold;
+    }
+    .match-btn.matched {
+      background-color: #f1f5f9;
+      color: #94a3b8;
+      border-color: #e2e8f0;
+      cursor: default;
+      text-decoration: line-through;
+    }
+    .chapter-select-wrap {
+      margin-bottom: 16px;
+    }
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      background: #fff;
+      font-weight: 600;
+    }
+    .exp-item {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    .exp-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .pattern-blank-box {
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #1e3a8a;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    /* Unscramble UX Styles */
+    .unscramble-dropzone {
+      min-height: 48px;
+      background-color: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .unscramble-dropzone.success {
+      border-color: #22c55e;
+      background-color: #f0fdf4;
+    }
+    .unscramble-dropzone.error {
+      border-color: #ef4444;
+      background-color: #fef2f2;
+      animation: shake 0.3s ease-in-out;
+    }
+    .chunk-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .chunk-btn {
+      padding: 8px 12px;
+      background-color: #ffffff;
+      border: 1.5px solid #94a3b8;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .chunk-btn:active {
+      transform: scale(0.96);
+    }
+    .chunk-btn.used {
+      opacity: 0.3;
+      cursor: default;
+      pointer-events: none;
+    }
+    .btn-reset-bottom {
+      width: 100%;
+      padding: 14px;
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn-reset-bottom:active {
+      background-color: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>건설 실무 영어 (Level 2)</h1>
+  <button class="btn-reset-top" onclick="resetAllProgress()">🔄 전체 초기화</button>
+</header>
+
+<div class="container">
+  <div class="chapter-select-wrap">
+    <select id="chapterSelect" onchange="loadChapter(this.value)">
+      <option value="1">Chapter 1. First Meeting & Networking</option>
+      <option value="2">Chapter 2. Project Proposal</option>
+      <option value="3">Chapter 3. Contract Negotiation</option>
+      <option value="4">Chapter 4. Construction Site Management</option>
+      <option value="5">Chapter 5. Progress Reporting & Site Review</option>
+      <option value="6">Chapter 6. Change Orders & Variations</option>
+    </select>
+  </div>
+
+  <nav>
+    <button class="tab-btn active" onclick="switchTab('vocab')">1. Vocab 매칭</button>
+    <button class="tab-btn" onclick="switchTab('expressions')">2. Useful Expressions</button>
+    <button class="tab-btn" onclick="switchTab('pattern')">3. Pattern 퀴즈</button>
+    <button class="tab-btn" onclick="switchTab('unscramble')">4. Key Sentences</button>
+  </nav>
+
+  <div id="contentArea" style="margin-top: 16px;">
+    <!-- Dynamic Content Loaded Here -->
+  </div>
+
+  <button class="btn-reset-bottom" onclick="resetAllProgress()">🔄 학습 기록 전체 초기화</button>
+</div>
+
+<script>
+// 교재 데이터 세트 (Appendix C Key Phrases 기반 Chunk Unscramble 데이터 수록)
+const courseData = {
+  1: {
+    title: "Chapter 1. First Meeting & Networking",
+    vocab: [
+      { eng: "senior manager", kor: "부장 / 고위 관리자" },
+      { eng: "specialize in", kor: "~을 전문으로 하다" },
+      { eng: "sustainable design", kor: "지속 가능한 설계" },
+      { eng: "energy-efficient", kor: "에너지 효율적인" }
+    ],
+    expressions: [
+      {
+        prompt: "1) ‘직접 만나뵙게 되어 반갑습니다.’의 올바른 표현을 고르세요.",
+        options: [
+          "Nice to meet your face directly.",
+          "It's a pleasure to see you in distance.",
+          "It's a pleasure to meet you in person.",
+          "I am happy to meet your body."
+        ],
+        answer: 2
+      },
+      {
+        prompt: "2) ‘저희 회사는 대규모 아파트 단지 건설을 전문으로 합니다.’의 알맞은 표현은?",
+        options: [
+          "Our company specializes in large-scale apartment complexes.",
+          "We manufacture large-scale apartment complexes.",
+          "We focus only in building small houses.",
+          "Our company deals about apartment selling."
+        ],
+        answer: 0
+      },
+      {
+        prompt: "3) ‘지속 가능한 디자인에 대한 수요가 증가하고 있습니다.’의 올바른 표현은?",
+        options: [
+          "Sustainable design is dropping down.",
+          "People dislike sustainable design these days.",
+          "There is a small interest for green design.",
+          "There is a growing demand for sustainable design."
+        ],
+        answer: 3
+      }
+    ],
+    patternQuiz: [
+      {
+        sentence: "We __________ apartment construction.",
+        fullSentence: "We specialize in apartment construction.",
+        options: ["1. focus, at", "2. specialize, in", "3. produce, on", "4. provide, with"],
+        answer: 1
+      },
+      {
+        sentence: "There __________ a growing demand __________ sustainable design.",
+        fullSentence: "There is a growing demand for sustainable design.",
+        options: ["1. is, to", "2. are, with", "3. is, for", "4. has, on"],
+        answer: 2
+      }
+    ],
+    unscramble: [
+      {
+        kor: "직접 만나 뵙게 되어 반갑습니다.",
+        fullEng: "It's a pleasure to meet you in person.",
+        chunks: ["It's a pleasure", "to meet you", "in person."]
+      },
+      {
+        kor: "저희 회사는 플랜트 건설을 전문으로 합니다.",
+        fullEng: "Our company specializes in plant construction.",
+        chunks: ["Our company", "specializes in", "plant construction."]
+      },
+      {
+        kor: "협력 가능성에 대해 논의하길 기대합니다.",
+        fullEng: "I look forward to discussing possible cooperation with you.",
+        chunks: ["I look forward to", "discussing possible cooperation", "with you."]
+      }
+    ]
+  },
+  2: {
+    title: "Chapter 2. Project Proposal",
+    vocab: [
+      { eng: "proposal", kor: "제안(서)" },
+      { eng: "construction period", kor: "공사 기간" },
+      { eng: "track record", kor: "실적" },
+      { eng: "payment terms", kor: "지불 조건" }
+    ],
+    expressions: [
+      {
+        prompt: "1) ‘단계별 지불 일정을 제안합니다.’의 자연스러운 영어 표현은?",
+        options: [
+          "We suggest a step-by-step cost list.",
+          "We offer a separated money table.",
+          "We suggest a phased payment schedule.",
+          "We propose split cash time."
+        ],
+        answer: 2
+      },
+      {
+        prompt: "2) ‘저희는 50개 이상의 프로젝트를 제때, 예산 내에 완료했습니다.’의 알맞은 표현은?",
+        options: [
+          "We completed 50 projects late with high cost.",
+          "We have completed over 50 projects on time and within budget.",
+          "We stopped over 50 projects inside budget.",
+          "Over 50 projects were finished under schedule."
+        ],
+        answer: 1
+      },
+      {
+        prompt: "3) ‘귀사 제안서의 차별점은 무엇입니까?’의 정확한 질문 표현은?",
+        options: [
+          "Why is your document so strange?",
+          "What is wrong with your proposal?",
+          "How is your project same as others?",
+          "What makes your proposal different from others?"
+        ],
+        answer: 3
+      }
+    ],
+    patternQuiz: [
+      {
+        sentence: "We __________ a 36-month construction period __________ a 150-million-dollar budget.",
+        fullSentence: "We propose a 36-month construction period with a 150-million-dollar budget.",
+        options: ["1. serve, at", "2. propose, with", "3. provide, for", "4. offer, from"],
+        answer: 1
+      },
+      {
+        sentence: "We __________ a shorter schedule __________ more manpower.",
+        fullSentence: "We propose a shorter schedule with more manpower.",
+        options: ["1. suggest, by", "2. make, for", "3. plan, on", "4. propose, with"],
+        answer: 3
+      }
+    ],
+    unscramble: [
+      {
+        kor: "발표 기회를 주셔서 감사합니다.",
+        fullEng: "Thank you for the opportunity to present our project.",
+        chunks: ["Thank you for", "the opportunity to", "present our project."]
+      },
+      {
+        kor: "36개월 공사 기간과 1억 5천만 달러의 총 비용을 제안 드립니다.",
+        fullEng: "We propose a 36-month construction period with a total cost of 150 million dollars.",
+        chunks: ["We propose a", "36-month construction period", "with a total cost of", "150 million dollars."]
+      },
+      {
+        kor: "50개 이상의 프로젝트를 제때, 예산 내에 완료했습니다.",
+        fullEng: "We have completed over 50 projects on time and within budget.",
+        chunks: ["We have completed", "over 50 projects", "on time and", "within budget."]
+      }
+    ]
+  },
+  3: {
+    title: "Chapter 3. Contract Negotiation",
+    vocab: [
+      { eng: "penalty clause", kor: "지연 벌금 조항" },
+      { eng: "force majeure", kor: "불가항력" },
+      { eng: "cost impact", kor: "비용 영향" },
+      { eng: "internal approval", kor: "내부 승인" }
+    ],
+    expressions: [
+      {
+        prompt: "1) ‘재무팀과 확인 후 회신드리겠습니다.’의 가장 자연스러운 표현은?",
+        options: [
+          "I will call finance team and stop conversation.",
+          "Finance team will say yes soon.",
+          "Let me check with our finance team and get back to you.",
+          "Let me check with our legal team right now."
+        ],
+        answer: 2
+      },
+      {
+        prompt: "2) ‘확정하기 전에 내부 승인이 필요합니다.’의 알맞은 표현은?",
+        options: [
+          "We need internal approval before confirming.",
+          "We accept everything without inside permission.",
+          "Internal team will check after signing.",
+          "We don't need any approval inside."
+        ],
+        answer: 0
+      },
+      {
+        prompt: "3) ‘해당 조항은 법무팀 검토가 필요합니다.’의 표현은?",
+        options: [
+          "Our legal team will erase that text.",
+          "Our legal team needs to review that clause.",
+          "We don't have a legal team to review.",
+          "Legal team already passed that clause."
+        ],
+        answer: 1
+      }
+    ],
+    patternQuiz: [
+      {
+        sentence: "Let me __________ __________ our finance team.",
+        fullSentence: "Let me check with our finance team.",
+        options: ["1. speak, to", "2. call, at", "3. check, with", "4. ask, for"],
+        answer: 2
+      },
+      {
+        sentence: "We are open __________ discussing terms, but we need __________ check internally.",
+        fullSentence: "We are open to discussing terms, but we need to check internally.",
+        options: ["1. for, for", "2. at, with", "3. on, by", "4. to, to"],
+        answer: 3
+      }
+    ],
+    unscramble: [
+      {
+        kor: "지급을 더 작은 단위로 나눌 수 있을까요?",
+        fullEng: "Can we split the payments into smaller parts?",
+        chunks: ["Can we split", "the payments into", "smaller parts?"]
+      },
+      {
+        kor: "확정 전에 내부 승인이 필요합니다.",
+        fullEng: "We need internal approval before confirming.",
+        chunks: ["We need", "internal approval", "before confirming."]
+      },
+      {
+        kor: "해당 조항은 법무팀 검토가 필요합니다.",
+        fullEng: "Our legal team needs to review that clause.",
+        chunks: ["Our legal team", "needs to review", "that clause."]
+      }
+    ]
+  },
+  4: {
+    title: "Chapter 4. Construction Site Management",
+    vocab: [
+      { eng: "safety violation", kor: "안전 위반" },
+      { eng: "suspend work", kor: "작업 중단하다" },
+      { eng: "alternative supplier", kor: "대체 공급업체" },
+      { eng: "combined approach", kor: "병행 방식" }
+    ],
+    expressions: [
+      {
+        prompt: "1) ‘현장입니다. 안전 문제가 있습니다.’의 알맞은 표현은?",
+        options: [
+          "I am at office. Danger happens.",
+          "I'm on site. We have a safety issue.",
+          "Here is field. Safety is bad.",
+          "I'm on site. No problem here."
+        ],
+        answer: 1
+      },
+      {
+        prompt: "2) ‘배송이 이틀 지연됩니다.’의 올바른 표현은?",
+        options: [
+          "The shipping comes two days early.",
+          "Delivery is stopped for two weeks.",
+          "We will delay two days delivery.",
+          "The delivery is delayed by two days."
+        ],
+        answer: 3
+      },
+      {
+        prompt: "3) ‘대체 공급업체를 찾아야 합니다.’의 표현은?",
+        options: [
+          "We need to find an alternative supplier.",
+          "We must stick to the original factory.",
+          "An alternative buyer is needed.",
+          "We should cancel all suppliers."
+        ],
+        answer: 0
+      }
+    ],
+    patternQuiz: [
+      {
+        sentence: "The delivery __________ delayed __________ two days.",
+        fullSentence: "The delivery is delayed by two days.",
+        options: ["1. was, for", "2. is, by", "3. has, with", "4. will, at"],
+        answer: 1
+      },
+      {
+        sentence: "We should __________ results __________ tomorrow.",
+        fullSentence: "We should have results by tomorrow.",
+        options: ["1. get, on", "2. see, at", "3. have, by", "4. take, until"],
+        answer: 2
+      }
+    ],
+    unscramble: [
+      {
+        kor: "현장입니다. 안전 문제가 있습니다.",
+        fullEng: "I'm on site. We have a safety issue.",
+        chunks: ["I'm on site.", "We have", "a safety issue."]
+      },
+      {
+        kor: "즉시 작업을 중단했습니다.",
+        fullEng: "I've stopped work immediately.",
+        chunks: ["I've stopped work", "immediately."]
+      },
+      {
+        kor: "실험실에서 샘플을 검사하고 있습니다.",
+        fullEng: "The lab is testing samples.",
+        chunks: ["The lab is", "testing samples."]
+      }
+    ]
+  },
+  5: {
+    title: "Chapter 5. Progress Reporting & Site Review",
+    vocab: [
+      { eng: "structural work", kor: "구조 공사" },
+      { eng: "mitigation measures", kor: "완화 조치" },
+      { eng: "contingency plan", kor: "대비 계획" },
+      { eng: "progress report", kor: "진행 보고서" }
+    ],
+    expressions: [
+      {
+        prompt: "1) ‘구조 공사의 약 60%를 완료했습니다.’의 올바른 표현은?",
+        options: [
+          "Structural work is delayed by 60 percent.",
+          "We finished almost 60 buildings.",
+          "We have completed approximately 60% of the structural work.",
+          "60% of workers left the site."
+        ],
+        answer: 2
+      },
+      {
+        prompt: "2) ‘계획대로 진행 중이며, 예산 범위 내입니다.’의 표현은?",
+        options: [
+          "We are late and over budget.",
+          "We are on track and still within budget.",
+          "We are off track with high money.",
+          "Budget is gone but on track."
+        ],
+        answer: 1
+      },
+      {
+        prompt: "3) ‘리스크 완화 조치 및 대비 계획을 준비했습니다.’의 알맞은 표현은?",
+        options: [
+          "We implemented mitigation measures and contingency plans.",
+          "We ignored risk assessment and future plans.",
+          "Mitigation action was rejected by site manager.",
+          "We don't have any contingency plans."
+        ],
+        answer: 0
+      }
+    ],
+    patternQuiz: [
+      {
+        sentence: "We __________ completed approximately 60% __________ the structural work.",
+        fullSentence: "We have completed approximately 60% of the structural work.",
+        options: ["1. keep, for", "2. did, with", "3. have, of", "4. are, in"],
+        answer: 2
+      },
+      {
+        sentence: "I'll send it __________ Friday __________ updated figures.",
+        fullSentence: "I'll send it by Friday with updated figures.",
+        options: ["1. by, with", "2. until, for", "3. on, about", "4. at, in"],
+        answer: 0
+      }
+    ],
+    unscramble: [
+      {
+        kor: "구조 공사의 약 60%를 완료했습니다.",
+        fullEng: "We have completed approximately 60% of the structural work.",
+        chunks: ["We have completed", "approximately 60%", "of the structural work."]
+      },
+      {
+        kor: "완화 조치를 시행했습니다.",
+        fullEng: "We implemented mitigation measures.",
+        chunks: ["We implemented", "mitigation measures."]
+      },
+      {
+        kor: "금요일까지 상세 진행 보고서를 보내 드리겠습니다.",
+        fullEng: "I'll send it by Friday with a detailed progress report.",
+        chunks: ["I'll send it", "by Friday with", "a detailed progress report."]
+      }
+    ]
+  },
+  6: {
+    title: "Chapter 6. Change Orders & Variations",
+    vocab: [
+      { eng: "change order", kor: "변경 지시서" },
+      { eng: "scope change", kor: "범위 변경" },
+      { eng: "schedule extension", kor: "일정 연장" },
+      { eng: "in writing", kor: "서면으로" }
+    ],
+    expressions: [
+      {
+        prompt: "1) ‘이는 공식적인 변경 지시서가 필요합니다.’의 표현은?",
+        options: [
+          "This needs a new contract deletion.",
+          "This is an informal request.",
+          "This would require a formal change order.",
+          "We must change paper now."
+        ],
+        answer: 2
+      },
+      {
+        prompt: "2) ‘이는 비용과 일정에 상당한 영향을 줄 것입니다.’의 표현은?",
+        options: [
+          "This will significantly impact the cost and schedule.",
+          "Cost and time will stay exactly same.",
+          "It has no impact on construction schedule.",
+          "This will slightly reduce total budget."
+        ],
+        answer: 0
+      },
+      {
+        prompt: "3) ‘변경 지시서가 서면으로 승인될 때까지 시작할 수 없습니다.’의 표현은?",
+        options: [
+          "We can start work before writing agreement.",
+          "Oral agreement is enough to begin extra work.",
+          "We will start immediately without formal approval.",
+          "We cannot start until the change order is approved in writing."
+        ],
+        answer: 3
+      }
+    ],
+    patternQuiz: [
+      {
+        sentence: "This __________ require a formal change __________.",
+        fullSentence: "This would require a formal change order.",
+        options: ["1. will, request", "2. would, order", "3. should, paper", "4. may, plan"],
+        answer: 1
+      },
+      {
+        sentence: "This will __________ the cost __________ approximately 15%.",
+        fullSentence: "This will impact the cost by approximately 15%.",
+        options: ["1. change, for", "2. increase, on", "3. affect, to", "4. impact, by"],
+        answer: 3
+      }
+    ],
+    unscramble: [
+      {
+        kor: "이는 공식적인 변경 지시서가 필요합니다.",
+        fullEng: "This would require a formal change order.",
+        chunks: ["This would require", "a formal", "change order."]
+      },
+      {
+        kor: "확정 전에 정확히 계산해 봐야 합니다.",
+        fullEng: "I need to calculate precisely before confirming.",
+        chunks: ["I need to", "calculate precisely", "before confirming."]
+      },
+      {
+        kor: "서면으로 승인되기 전에는 추가 공사를 시작할 수 없습니다.",
+        fullEng: "We cannot start any additional work until approved in writing.",
+        chunks: ["We cannot start", "any additional work", "until approved", "in writing."]
+      }
+    ]
+  }
+};
+
+let currentChapter = 1;
+let currentTab = 'vocab';
+let selectedVocabEng = null;
+let selectedVocabKor = null;
+
+// App Initialization & State Persistence
+window.onload = function() {
+  const savedChapter = localStorage.getItem('app_chapter');
+  const savedTab = localStorage.getItem('app_tab');
+  
+  if (savedChapter) {
+    currentChapter = parseInt(savedChapter);
+    document.getElementById('chapterSelect').value = currentChapter;
+  }
+  if (savedTab) {
+    currentTab = savedTab;
+    updateTabUI();
+  }
+  renderContent();
+};
+
+function loadChapter(ch) {
+  currentChapter = parseInt(ch);
+  localStorage.setItem('app_chapter', currentChapter);
+  renderContent();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  localStorage.setItem('app_tab', currentTab);
+  updateTabUI();
+  renderContent();
+}
+
+function updateTabUI() {
+  document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+    const tabs = ['vocab', 'expressions', 'pattern', 'unscramble'];
+    if (tabs[idx] === currentTab) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+}
+
+// Reset All Learning Records
+function resetAllProgress() {
+  if (confirm("모든 학습 기록 및 퀴즈 풀이 내역을 초기화하시겠습니까?")) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+// Text To Speech (TTS) Reader
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  } else {
+    alert("이 브라우저는 음성 재생(TTS)을 지원하지 않습니다.");
+  }
+}
+
+// Helper: Seeded Random Shuffle
+function shuffleArray(array, seedStr) {
+  let arr = [...array];
+  let hash = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    hash = seedStr.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.abs(hash + i) % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Render Tab Contents
+function renderContent() {
+  const data = courseData[currentChapter];
+  const container = document.getElementById('contentArea');
+
+  if (currentTab === 'vocab') {
+    let engList = [...data.vocab].sort(() => Math.random() - 0.5);
+    let korList = [...data.vocab].sort(() => Math.random() - 0.5);
+    
+    container.innerHTML = `
+      <div class="card">
+        <h3>1) Vocabulary 매칭 학습</h3>
+        <p style="font-size:0.85rem; color:#64748b;">영어 단어와 한글 의미를 각각 터치하여 매칭해 보세요.</p>
+        <div class="matching-grid">
+          <div>
+            ${engList.map(v => `
+              <div class="match-btn" id="eng_${v.eng.replace(/\s+/g, '_')}" onclick="selectEng('${v.eng}')">
+                ${v.eng} <button class="btn-audio" onclick="event.stopPropagation(); speakText('${v.eng}')">🔊</button>
+              </div>
+            `).join('')}
+          </div>
+          <div>
+            ${korList.map(v => `
+              <div class="match-btn" id="kor_${v.kor.replace(/\s+/g, '_')}" onclick="selectKor('${v.kor}')">
+                ${v.kor}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (currentTab === 'expressions') {
+    container.innerHTML = `
+      <div class="card">
+        <h3>2) Useful Expressions (유의 표현 선택)</h3>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:16px;">상황별 가장 적절하고 자연스러운 건설 실무 영어 표현을 고르세요.</p>
+        ${data.expressions.map((exp, expIdx) => {
+          const expStateKey = `exp_${currentChapter}_${expIdx}`;
+          const savedExpAnswer = localStorage.getItem(expStateKey);
+          return `
+            <div class="exp-item">
+              <p style="font-size:0.92rem; font-weight:700; color:#1e3a8a; margin-bottom:8px;">${exp.prompt}</p>
+              <div class="quiz-options">
+                ${exp.options.map((opt, idx) => `
+                  <div class="quiz-option ${savedExpAnswer !== null && parseInt(savedExpAnswer) === idx ? 'correct' : ''}" 
+                       id="opt_exp_${expIdx}_${idx}"
+                       onclick="handleOptionClick('exp', ${expIdx}, ${idx}, ${exp.answer})">
+                    <span>${opt}</span>
+                    <button class="btn-audio" onclick="event.stopPropagation(); speakText(\`${opt}\`)">🔊</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else if (currentTab === 'pattern') {
+    container.innerHTML = `
+      <div class="card">
+        <h3>3) Chapter Pattern 퀴즈</h3>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:16px;">문맥에 맞는 올바른 동사 및 전치사 표현을 골라 빈칸을 완성하세요.</p>
+        ${data.patternQuiz.map((pq, pqIdx) => {
+          const pqStateKey = `pq_${currentChapter}_${pqIdx}`;
+          const savedPqAnswer = localStorage.getItem(pqStateKey);
+          return `
+            <div class="exp-item">
+              <div class="pattern-blank-box">
+                ${pq.sentence}
+              </div>
+              <div class="quiz-options">
+                ${pq.options.map((opt, idx) => `
+                  <div class="quiz-option ${savedPqAnswer !== null && parseInt(savedPqAnswer) === idx ? 'correct' : ''}" 
+                       id="opt_pq_${pqIdx}_${idx}"
+                       onclick="handleOptionClick('pq', ${pqIdx}, ${idx}, ${pq.answer})">
+                    <span>${opt}</span>
+                  </div>
+                `).join('')}
+              </div>
+              ${savedPqAnswer !== null ? `
+                <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:#059669; font-weight:bold;">정답 문장: ${pq.fullEng || pq.fullSentence}</span>
+                  <button class="btn-audio" onclick="speakText(\`${pq.fullEng || pq.fullSentence}\`)">🔊 문장 듣기</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else if (currentTab === 'unscramble') {
+    container.innerHTML = `
+      <div class="card">
+        <h3>4) Key Sentences Unscramble</h3>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:16px;">한글 의미를 보고 아래 흩어진 단어 묶음(Chunk)을 순서대로 터치하세요.</p>
+        ${data.unscramble.map((un, uIdx) => {
+          const uStateKey = `unscramble_${currentChapter}_${uIdx}`;
+          const isDone = localStorage.getItem(uStateKey) === 'true';
+          const shuffledChunks = shuffleArray(un.chunks, `ch_${currentChapter}_${uIdx}`);
+
+          return `
+            <div class="exp-item" id="unscramble_wrap_${uIdx}">
+              <p style="font-size:0.92rem; font-weight:700; color:#1e3a8a; margin-bottom:8px;">
+                ${uIdx + 1}) "${un.kor}"
+              </p>
+              
+              <!-- Dropzone -->
+              <div class="unscramble-dropzone ${isDone ? 'success' : ''}" id="dropzone_${uIdx}">
+                ${isDone ? un.chunks.map(c => `<div class="chunk-btn" style="border-color:#22c55e; background:#dcfce7; color:#15803d;">${c}</div>`).join('') : ''}
+              </div>
+
+              <!-- Chunk Pool -->
+              ${!isDone ? `
+                <div class="chunk-pool" id="pool_${uIdx}">
+                  ${shuffledChunks.map((chunk, cIdx) => `
+                    <div class="chunk-btn" id="chunk_${uIdx}_${cIdx}" onclick="selectChunk(${uIdx}, '${chunk.replace(/'/g, "\\'")}', ${cIdx})">
+                      ${chunk}
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:#059669; font-weight:bold;">정답 완성!</span>
+                  <button class="btn-audio" onclick="speakText(\`${un.fullEng}\`)">🔊 전체 문장 듣기</button>
+                </div>
+              `}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+}
+
+// Unscramble Interactive Logic
+let currentUnscrambleState = {};
+
+function selectChunk(uIdx, chunkText, cIdx) {
+  const itemKey = `u_${currentChapter}_${uIdx}`;
+  if (!currentUnscrambleState[itemKey]) {
+    currentUnscrambleState[itemKey] = [];
+  }
+  
+  const state = currentUnscrambleState[itemKey];
+  const chunkBtn = document.getElementById(`chunk_${uIdx}_${cIdx}`);
+  
+  if (chunkBtn.classList.contains('used')) return;
+
+  state.push({ text: chunkText, cIdx: cIdx });
+  chunkBtn.classList.add('used');
+
+  renderDropzone(uIdx);
+}
+
+function removeChunk(uIdx, arrayIdx) {
+  const itemKey = `u_${currentChapter}_${uIdx}`;
+  const state = currentUnscrambleState[itemKey];
+  if (!state) return;
+
+  const removed = state.splice(arrayIdx, 1)[0];
+  const chunkBtn = document.getElementById(`chunk_${uIdx}_${removed.cIdx}`);
+  if (chunkBtn) chunkBtn.classList.remove('used');
+
+  renderDropzone(uIdx);
+}
+
+function renderDropzone(uIdx) {
+  const itemKey = `u_${currentChapter}_${uIdx}`;
+  const state = currentUnscrambleState[itemKey] || [];
+  const dropzone = document.getElementById(`dropzone_${uIdx}`);
+  const un = courseData[currentChapter].unscramble[uIdx];
+
+  dropzone.innerHTML = state.map((item, idx) => `
+    <div class="chunk-btn" style="background:#eff6ff; border-color:#2563eb; color:#2563eb;" onclick="removeChunk(${uIdx}, ${idx})">
+      ${item.text} ✕
+    </div>
+  `).join('');
+
+  // Check Full Combination
+  if (state.length === un.chunks.length) {
+    const userString = state.map(s => s.text).join(' ');
+    const targetString = un.chunks.join(' ');
+
+    if (userString === targetString) {
+      // Success
+      dropzone.classList.add('success');
+      localStorage.setItem(`unscramble_${currentChapter}_${uIdx}`, 'true');
+      setTimeout(() => {
+        renderContent();
+      }, 400);
+    } else {
+      // Incorrect -> Flash Red & Reset State
+      dropzone.classList.add('error');
+      setTimeout(() => {
+        dropzone.classList.remove('error');
+        currentUnscrambleState[itemKey] = [];
+        renderContent();
+      }, 800);
+    }
+  }
+}
+
+// Matching Logic
+function selectEng(eng) {
+  selectedVocabEng = eng;
+  document.querySelectorAll('[id^="eng_"]').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`eng_${eng.replace(/\s+/g, '_')}`).classList.add('selected');
+  checkMatch();
+}
+
+function selectKor(kor) {
+  selectedVocabKor = kor;
+  document.querySelectorAll('[id^="kor_"]').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`kor_${kor.replace(/\s+/g, '_')}`).classList.add('selected');
+  checkMatch();
+}
+
+function checkMatch() {
+  if (selectedVocabEng && selectedVocabKor) {
+    const list = courseData[currentChapter].vocab;
+    const match = list.find(v => v.eng === selectedVocabEng && v.kor === selectedVocabKor);
+    
+    if (match) {
+      document.getElementById(`eng_${selectedVocabEng.replace(/\s+/g, '_')}`).classList.add('matched');
+      document.getElementById(`kor_${selectedVocabKor.replace(/\s+/g, '_')}`).classList.add('matched');
+    }
+    selectedVocabEng = null;
+    selectedVocabKor = null;
+    document.querySelectorAll('.match-btn').forEach(el => el.classList.remove('selected'));
+  }
+}
+
+// Universal Quiz Option Click Handler
+function handleOptionClick(type, itemIdx, selectedIdx, correctIdx) {
+  const elementId = `opt_${type}_${itemIdx}_${selectedIdx}`;
+  const targetEl = document.getElementById(elementId);
+
+  if (selectedIdx === correctIdx) {
+    localStorage.setItem(`${type}_${currentChapter}_${itemIdx}`, selectedIdx);
+    renderContent();
+  } else {
+    if (targetEl) {
+      targetEl.classList.add('incorrect-temp');
+      setTimeout(() => {
+        targetEl.classList.remove('incorrect-temp');
+      }, 800);
+    }
+  }
+}
+</script>
+</body>
+</html>
